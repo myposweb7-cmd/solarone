@@ -1,0 +1,37 @@
+{
+  "name": "solarone",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "packageManager": "npm@10.9.2",
+  "scripts": {
+    "dev": "tsx server/index.ts",
+    "build": "tsc -p tsconfig.server.json && vite build",
+    "start": "node dist-server/server/index.js",
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.server.json --noEmit"
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "latest",
+    "cors": "latest",
+    "express": "latest",
+    "helmet": "latest",
+    "lucide-react": "latest",
+    "pg": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "react-router-dom": "latest",
+    "recharts": "latest",
+    "vite": "latest",
+    "zod": "latest"
+  },
+  "devDependencies": {
+    "@types/cors": "latest",
+    "@types/express": "latest",
+    "@types/node": "latest",
+    "@types/pg": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "tsx": "latest",
+    "typescript": "latest"
+  }
+}
