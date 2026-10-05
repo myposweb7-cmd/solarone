@@ -2,6 +2,7 @@ import cors from 'cors';
 import express from 'express';
 import helmet from 'helmet';
 import { createServer as createViteServer } from 'vite';
+import { createServer as createHttpServer } from 'node:http';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { z } from 'zod';
@@ -19,6 +20,7 @@ app.use(helmet({ contentSecurityPolicy: false, crossOriginEmbedderPolicy: false 
 const appOrigin = process.env.APP_ORIGIN;
 app.use(cors(appOrigin ? { origin: appOrigin, credentials: true } : { origin: false }));
 app.use(express.json({ limit: '1mb' }));
+const httpServer = createHttpServer(app);
 
 app.get('/api/health', (_req, res) => res.json({ ok: true, service: 'solarone', mode: isProduction ? 'production' : 'development', timestamp: new Date().toISOString() }));
 app.get('/api/dashboard', (_req, res) => res.json({ data: demoSummary, mode: 'demo', message: 'Demo fixture data is isolated. Connect a provider to replace it with real API telemetry.' }));
@@ -50,8 +52,8 @@ if (isProduction) {
   app.use(express.static(path.join(root, 'dist')));
   app.get(/.*/, (_req, res) => res.sendFile(path.join(root, 'dist', 'index.html')));
 } else {
-  const vite = await createViteServer({ root, server: { middlewareMode: true, hmr: { port: 24679 } }, appType: 'spa' });
+  const vite = await createViteServer({ root, server: { middlewareMode: true, hmr: { server: httpServer } }, appType: 'spa' });
   app.use(vite.middlewares);
 }
 
-app.listen(port, '0.0.0.0', () => console.log(`SolarOne server listening on 0.0.0.0:${port}`));
+httpServer.listen(port, '0.0.0.0', () => console.log(`SolarOne server listening on 0.0.0.0:${port}`));
