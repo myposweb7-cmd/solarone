@@ -1,3 +1,3 @@
 export default {
-  logoUrl: "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/solarwinds.svg",
+  logoUrl: "https://files.manuscdn.com/user_upload_by_module/session_file/310519664001100584/LjsxrKqdCUTwaWRd.png",
 };
