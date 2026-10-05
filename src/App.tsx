@@ -25,7 +25,7 @@ const providerCards = [
   { key: 'sungrow', name: 'Sungrow', subtitle: 'Architecture-ready', status: 'coming_soon', icon: 'SG', accent: 'orange' },
 ];
 
-function HiEnergyLogo() { return <img className="hienergy-logo" src="/hienergy-logo.png" alt="HiEnergy Services (Pvt) Ltd" />; }
+function HiEnergyLogo({ landing = false }: { landing?: boolean }) { return <img className={`hienergy-logo${landing ? ' hienergy-landing-logo' : ''}`} src={landing ? '/hienergy-landing-logo.png' : '/hienergy-logo.png'} alt="HiEnergy Services (Pvt) Ltd" />; }
 
 export default function App() {
   const location = useLocation();
@@ -37,7 +37,7 @@ function LandingPage() {
   return (
     <div className="landing-page">
       <header className="landing-nav shell-wide">
-        <Link className="brand brand-dark" to="/"><HiEnergyLogo /></Link>
+        <Link className="brand brand-dark" to="/"><HiEnergyLogo landing /></Link>
         <nav className="landing-links"><a href="#platform">Platform</a><a href="#integrations">Integrations</a><a href="#companies">For solar companies</a><a href="#pricing">Pricing</a></nav>
         <div className="landing-actions"><Link className="text-button" to="/app">Sign in</Link><Link className="button button-dark button-small" to="/app">Start monitoring <ArrowRight size={15} /></Link></div>
       </header>
@@ -67,7 +67,7 @@ function LandingPage() {
         <section className="split-section shell-wide" id="companies"><div className="split-copy"><div className="eyebrow">For solar companies</div><h2>Run every installation like it is the only one.</h2><p>From customer handover to service history, SolarOne gives installers the operating layer their portfolio has been missing.</p><div className="split-list"><span><Check size={15} /> Portfolio-wide health at a glance</span><span><Check size={15} /> Service tickets connected to system data</span><span><Check size={15} /> White-label experience for your customers</span></div><Link className="inline-link" to="/app/customers">Explore the installer workspace <ArrowRight size={15} /></Link></div><div className="ops-card"><div className="ops-head"><div><small>INSTALLER OVERVIEW</small><strong>ABC Solar</strong></div><span className="ops-period">This month <ChevronDown size={13} /></span></div><div className="ops-stats"><div><small>Customers</small><b>248</b><span className="positive">+12% <ArrowUpRight size={11} /></span></div><div><small>Installations</small><b>376</b><span className="positive">+8% <ArrowUpRight size={11} /></span></div><div><small>Online systems</small><b>361</b><span className="neutral">96.0%</span></div></div><div className="ops-bars"><div className="bar-row"><span>Online</span><div><i style={{ width: '96%' }} /></div><b>361</b></div><div className="bar-row"><span>Warning</span><div><i className="warning" style={{ width: '12%' }} /></div><b>8</b></div><div className="bar-row"><span>Offline</span><div><i className="offline" style={{ width: '5%' }} /></div><b>7</b></div></div><div className="ops-ticket"><span className="ticket-alert"><AlertTriangle size={14} /></span><div><b>7 systems need attention</b><small>Review service queue</small></div><ArrowRight size={15} /></div></div></section>
         <section className="cta-band"><div className="shell-wide cta-inner"><div><div className="eyebrow">The solar control plane</div><h2>Your energy data, finally in one place.</h2></div><Link className="button button-gold" to="/app">Open the workspace <ArrowRight size={16} /></Link></div></section>
       </main>
-      <footer className="landing-footer shell-wide"><Link className="brand brand-dark" to="/"><HiEnergyLogo /></Link><span>Universal solar monitoring, built for clarity.</span><span>© 2026 SolarOne</span></footer>
+      <footer className="landing-footer shell-wide"><Link className="brand brand-dark" to="/"><HiEnergyLogo landing /></Link><span>Universal solar monitoring, built for clarity.</span><span>© 2026 SolarOne</span></footer>
     </div>
   );
 }
