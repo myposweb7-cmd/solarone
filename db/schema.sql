@@ -1,6 +1,7 @@
 -- SolarOne relational schema reference.
--- The repository/service boundary keeps this portable between managed relational
--- development storage and a PostgreSQL production deployment.
+-- Runtime persistence uses the configured TiDB/MySQL-compatible DATABASE_URL.
+-- server/database.ts bootstraps the operational tables used by the current API.
+-- This extended reference remains the target model for provider telemetry, auth, and reporting migrations.
 
 CREATE TABLE companies (id UUID PRIMARY KEY, name VARCHAR(160) NOT NULL, slug VARCHAR(120) UNIQUE NOT NULL, created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP);
 CREATE TABLE users (id UUID PRIMARY KEY, company_id UUID REFERENCES companies(id), email VARCHAR(320) UNIQUE NOT NULL, password_hash TEXT NOT NULL, role VARCHAR(32) NOT NULL, email_verified_at TIMESTAMP NULL, created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP);
