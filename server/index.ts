@@ -25,13 +25,14 @@ app.use(cors(appOrigin ? { origin: appOrigin, credentials: true } : { origin: fa
 app.use(express.json({ limit: '1mb' }));
 
 const sendDatabaseError = (res: express.Response) => res.status(503).json({ error: 'database_unavailable', message: 'The SolarOne data service is unavailable. No changes were saved.' });
-const systemInput = z.object({ name: z.string().trim().min(2).max(160), location: z.string().trim().min(2).max(255), capacityKw: z.number().positive().max(100000), manufacturer: z.string().trim().min(2).max(120), model: z.string().trim().min(2).max(160) });
+const systemInput = z.object({ name: z.string().trim().min(2).max(160), location: z.string().trim().min(2).max(255), capacityKw: z.number().positive().max(100000), manufacturer: z.string().trim().min(2).max(120), model: z.string().trim().min(2).max(160), customerId: z.string().trim().max(64).optional() });
 const customerInput = z.object({ name: z.string().trim().min(2).max(160), email: z.string().trim().email().max(320), site: z.string().trim().min(2).max(160) });
 const ticketInput = z.object({ title: z.string().trim().min(3).max(160), system: z.string().trim().min(2).max(160), priority: z.enum(['Normal', 'High', 'Critical']), technician: z.string().trim().max(160).default('') });
 const settingsInput = z.object({ companyName: z.string().trim().min(2).max(160), supportEmail: z.string().trim().email().max(320), primaryColor: z.string().regex(/^#[0-9a-fA-F]{6}$/), secondaryColor: z.string().regex(/^#[0-9a-fA-F]{6}$/), notifications: z.record(z.string(), z.boolean()) });
 
 app.get('/api/health', (_req, res) => res.json({ ok: true, service: 'solarone', mode: isProduction ? 'production' : 'development', database: database.isAvailable() ? 'ready' : 'unavailable', timestamp: new Date().toISOString() }));
 app.get('/api/dashboard', (_req, res) => res.json({ data: demoSummary, mode: 'demo', message: 'Summary telemetry is demo-only until verified provider readings are ingested.' }));
+app.get('/api/hierarchy', async (_req, res) => { try { return res.json({ data: await database.getHierarchy(), mode: 'database' }); } catch { return sendDatabaseError(res); } });
 app.get('/api/systems', async (_req, res) => { try { return res.json({ data: await database.listSystems(), mode: 'database' }); } catch { return sendDatabaseError(res); } });
 app.get('/api/systems/:id', async (req, res) => { try { const system = (await database.listSystems()).find((item) => item.id === req.params.id); return system ? res.json({ data: system, mode: 'database' }) : res.status(404).json({ error: 'not_found', message: 'System not found' }); } catch { return sendDatabaseError(res); } });
 app.post('/api/systems', async (req, res) => { const parsed = systemInput.safeParse(req.body); if (!parsed.success) return res.status(400).json({ error: 'validation_error', details: parsed.error.flatten() }); try { return res.status(201).json({ data: await database.createSystem(parsed.data), mode: 'database', message: 'System saved as pending provider connection. No live readings are claimed.' }); } catch { return sendDatabaseError(res); } });

@@ -25,6 +25,8 @@ export interface NormalizedTelemetry {
 export interface SolarSystem {
   id: string;
   name: string;
+  customerId?: string | null;
+  customerName?: string | null;
   location: string;
   capacityKw: number;
   manufacturer: string;
@@ -70,3 +72,7 @@ export interface EnergyPoint {
   export: number;
   import: number;
 }
+
+export interface ProviderConnection { id: string; providerKey: string; providerName: string; status: ProviderStatus; customerCount: number; systemCount: number; }
+export interface HierarchyCustomer { id: string; name: string; email: string; site: string; systems: SolarSystem[]; }
+export interface SolarHierarchy { company: { id: string; name: string }; connections: ProviderConnection[]; customers: HierarchyCustomer[]; }

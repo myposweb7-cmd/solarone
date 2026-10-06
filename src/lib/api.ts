@@ -1,4 +1,4 @@
-import type { Alert, DashboardSummary, SolarSystem } from '../domain/types';
+import type { Alert, DashboardSummary, SolarSystem, SolarHierarchy } from '../domain/types';
 
 export interface ApiEnvelope<T> { data: T; mode?: 'demo' | 'database' | 'real_api' | 'empty_state'; message?: string; }
 export class ApiError extends Error { constructor(public status: number, public code: string, message: string) { super(message); this.name = 'ApiError'; } }
@@ -13,7 +13,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<ApiEnvelope
 
 export function fetchDashboard() { return request<DashboardSummary>('/api/dashboard'); }
 export function fetchSystems() { return request<SolarSystem[]>('/api/systems'); }
-export function createSystem(input: { name: string; location: string; capacityKw: number; manufacturer: string; model: string }) { return request<SolarSystem>('/api/systems', { method: 'POST', body: JSON.stringify(input) }); }
+export function createSystem(input: { name: string; location: string; capacityKw: number; manufacturer: string; model: string; customerId?: string }) { return request<SolarSystem>('/api/systems', { method: 'POST', body: JSON.stringify(input) }); }
 export function fetchAlerts() { return request<Alert[]>('/api/alerts'); }
 export function acknowledgeAllAlerts() { return request<{ acknowledged: number }>('/api/alerts/acknowledge-all', { method: 'POST' }); }
 export interface CustomerRecord { id: string; name: string; email: string; site: string; }
@@ -27,3 +27,5 @@ export interface SettingsRecord { companyName: string; supportEmail: string; pri
 export function fetchSettings() { return request<SettingsRecord>('/api/settings'); }
 export function saveSettings(input: SettingsRecord) { return request<SettingsRecord>('/api/settings', { method: 'PUT', body: JSON.stringify(input) }); }
 export function connectProvider(provider: string, input: Record<string, string>) { return request<unknown>(`/api/integrations/${provider}/connect`, { method: 'POST', body: JSON.stringify(input) }); }
+
+export function fetchHierarchy() { return request<SolarHierarchy>('/api/hierarchy'); }
