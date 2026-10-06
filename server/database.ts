@@ -56,7 +56,7 @@ export class SolarOneDatabase {
 
   async listSystems(): Promise<SolarSystem[]> {
     const pool = this.requirePool(); const [rows] = await pool.query<Row[]>(`SELECT * FROM solar_systems WHERE company_id = ? ORDER BY created_at ASC`, [this.companyId]);
-    return rows.map((row) => ({ id: String(row.id), name: String(row.name), location: String(row.location), capacityKw: Number(row.capacity_kw), manufacturer: String(row.manufacturer), model: String(row.model), status: row.status as SolarSystem['status'], todayKwh: row.today_kwh == null ? null : Number(row.today_kwh), lastSyncAt: row.last_sync_at ? new Date(String(row.last_sync_at)).toISOString() : null, telemetry: null, providerStatus: row.provider_status as SolarSystem['providerStatus'] }));
+    return rows.map((row) => ({ id: String(row.id), name: String(row.name), location: String(row.location), capacityKw: Number(row.capacity_kw), manufacturer: String(row.manufacturer), model: String(row.model), status: row.provider_status === 'connected' ? row.status as SolarSystem['status'] : 'unknown', todayKwh: row.today_kwh == null ? null : Number(row.today_kwh), lastSyncAt: row.provider_status === 'connected' && row.last_sync_at ? new Date(String(row.last_sync_at)).toISOString() : null, telemetry: null, providerStatus: row.provider_status as SolarSystem['providerStatus'] }));
   }
 
   async createSystem(input: { name: string; location: string; capacityKw: number; manufacturer: string; model: string }) {
